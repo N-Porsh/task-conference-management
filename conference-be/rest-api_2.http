@@ -1,0 +1,21 @@
+GET http://localhost:8080/api/participants/
+
+
+###
+GET http://localhost:8080/api/participants/4
+
+
+###
+POST http://localhost:8080/api/participants/
+Content-Type: Application/json
+
+{
+  "conferenceId": 1,
+  "fullName": "Joe Doek",
+  "birthDate": "1970-05-20"
+}
+
+###
+DELETE http://localhost:8080/api/participants/2
+
+###
