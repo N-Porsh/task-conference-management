@@ -7,12 +7,16 @@ import axios from "axios";
 import {api} from "../../config";
 
 class ConferencesForm extends React.Component {
+
     constructor(props) {
+        const nextDay = new Date();
+        nextDay.setDate(nextDay.getDate() + 1);
+
         super(props);
         this.state = {
             roomId: '',
             name: '',
-            dateTime: new Date(),
+            dateTime: nextDay,
             roomIdError: '',
             nameError: '',
             dateTimeError: '',
@@ -109,6 +113,7 @@ class ConferencesForm extends React.Component {
                     <Label>Date and time</Label>
                     <Control>
                         <DatePicker
+                            id="dp"
                             placeholderText="Choose Date & time"
                             selected={this.state.dateTime}
                             onChange={this.handleDateChange}

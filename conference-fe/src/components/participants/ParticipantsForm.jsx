@@ -13,7 +13,7 @@ class ParticipantsForm extends React.Component {
         this.state = {
             conferenceId: '',
             fullName: '',
-            birthDate: '',
+            birthDate: new Date('1990-01-01'),
             conferenceIdError: '',
             fullNameError: '',
             birthDateError: '',
