@@ -20,7 +20,6 @@ public class ParticipantService {
 
     private final ParticipantRepository participantRepository;
     private final ConferenceService conferenceService;
-    private final RoomService roomService;
 
     public List<ParticipantEntity> getAllParticipants() {
         return participantRepository.findAll();
@@ -55,7 +54,7 @@ public class ParticipantService {
 
     private boolean checkAvailability(long conferenceId) {
         ConferenceEntity conference = conferenceService.getById(conferenceId);
-        int maxSeats = roomService.getById(conference.getRoomId()).getMaxSeats();
+        int maxSeats = conference.getRoom().getMaxSeats();
 
         long participantCount = participantRepository.findAll()
                 .stream()

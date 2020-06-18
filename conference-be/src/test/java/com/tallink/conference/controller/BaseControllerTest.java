@@ -46,7 +46,11 @@ public class BaseControllerTest {
         ConferenceRequest request = new ConferenceRequest();
         request.setName("Java Summit 2021");
         request.setDateTime(new GregorianCalendar(2021, Calendar.JANUARY, 10).getTime());
-        request.setRoomId(1L);
-        conferenceRepository.save(new ConferenceEntity(request));
+
+        RoomEntity roomEntity = roomRepository.findById(1L).get();
+        ConferenceEntity conference = new ConferenceEntity(request);
+        conference.setRoom(roomEntity);
+
+        conferenceRepository.save(conference);
     }
 }

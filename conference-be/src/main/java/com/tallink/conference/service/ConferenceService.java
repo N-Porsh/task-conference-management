@@ -3,6 +3,7 @@ package com.tallink.conference.service;
 import com.tallink.conference.entity.ConferenceEntity;
 import com.tallink.conference.models.ConferenceRequest;
 import com.tallink.conference.repository.ConferenceRepository;
+import com.tallink.conference.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class ConferenceService {
 
     private final ConferenceRepository conferenceRepository;
+    private final RoomRepository roomRepository;
 
     public List<ConferenceEntity> getAllConferences() {
         return conferenceRepository.findAll();
@@ -39,25 +41,14 @@ public class ConferenceService {
 
     public ResponseEntity addConference(ConferenceRequest conferenceRequest) {
         ConferenceEntity newConference = new ConferenceEntity(conferenceRequest);
-
+        Long roomId = conferenceRequest.getRoomId();
         log.info("Adding new conference");
 
-        ConferenceEntity conferenceEntity = conferenceRepository.save(newConference);
-        return ResponseEntity.status(HttpStatus.CREATED).body(conferenceEntity);
-    }
-
-    public ResponseEntity updateConference(ConferenceRequest conferenceRequest, Long id) {
-        ConferenceEntity conference = getById(id);
-        if (conference == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        conference.setRoomId(conferenceRequest.getRoomId());
-        conference.setName(conferenceRequest.getName());
-        conference.setDateTime(conferenceRequest.getDateTime());
-        conferenceRepository.save(conference);
-
-        return ResponseEntity.noContent().build();
+        return roomRepository.findById(roomId).map(room -> {
+            newConference.setRoom(room);
+            conferenceRepository.save(newConference);
+            return ResponseEntity.status(HttpStatus.CREATED).body(newConference);
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     public ResponseEntity deleteById(Long id) {

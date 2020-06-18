@@ -1,8 +1,10 @@
 package com.tallink.conference.controller;
 
 import com.tallink.conference.entity.ConferenceEntity;
+import com.tallink.conference.entity.RoomEntity;
 import com.tallink.conference.models.ConferenceRequest;
 import com.tallink.conference.repository.ConferenceRepository;
+import com.tallink.conference.repository.RoomRepository;
 import io.restassured.response.ValidatableResponse;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,6 +26,9 @@ public class ConferenceControllerTest extends BaseControllerTest {
     @Autowired
     private ConferenceRepository conferenceRepository;
 
+    @Autowired
+    private RoomRepository roomRepository;
+
     @BeforeEach
     void setUp() {
         super.setUp();
@@ -36,13 +41,16 @@ public class ConferenceControllerTest extends BaseControllerTest {
         ConferenceRequest request = new ConferenceRequest();
         request.setName("Big Conf!");
         request.setDateTime(new GregorianCalendar(2020, Calendar.FEBRUARY, 10).getTime());
-        request.setRoomId(1L);
-        ConferenceEntity conferenceEntity = conferenceRepository
-                .save(new ConferenceEntity(request));
-        Optional<ConferenceEntity> foundEntity = conferenceRepository.findById(conferenceEntity.getId());
+
+        ConferenceEntity newConference = new ConferenceEntity(request);
+        RoomEntity room = roomRepository.findById(1L).get();
+        newConference.setRoom(room);
+        conferenceRepository.save(newConference);
+
+        Optional<ConferenceEntity> foundEntity = conferenceRepository.findById(newConference.getId());
 
         assertNotNull(foundEntity);
-        assertEquals(conferenceEntity.getName(), foundEntity.get().getName());
+        assertEquals(newConference.getName(), foundEntity.get().getName());
     }
 
     @Test
